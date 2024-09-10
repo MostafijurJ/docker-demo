@@ -1,0 +1,16 @@
+##### STAGE 1: Build #####
+FROM openjdk:17-jdk-alpine as build
+# Create a directory for the app
+WORKDIR /app
+# Copy the app to the container
+COPY . .
+
+# install dependencies
+RUN ./mvnw clean package -DskipTests
+
+ ##### STAGE 2: Setup #####
+FROM openjdk:17-jdk-alpine as run
+
+COPY --from=build /app/target/docker-demo-0.0.1-SNAPSHOT.jar app.jar
+# run the app
+CMD ["java", "-jar", "app.jar"]
